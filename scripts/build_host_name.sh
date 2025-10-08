@@ -10,7 +10,7 @@ region=$(tomlq '.default.deploy.parameters.region' ${script_dir}/../samconfig.to
 
 resourcedir="$(realpath "${script_dir}/../.resourceids-$stackname")"
 
-API=$(cat $resourcedir/ServerlessRestApi.txt)
-STAGE=$(cat $resourcedir/ServerlessRestApiProdStage.txt)
+API=$(cat $resourcedir/ApiGateway.txt)
+STAGE=$(cat $resourcedir/ApiGatewayProdStage.txt)
 
 echo "https://${API}.execute-api.${region}.amazonaws.com/${STAGE}"
