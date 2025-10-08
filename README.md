@@ -68,7 +68,7 @@ When you’re done experimenting, clean up resources to avoid charges:
 ```
 
 ---
-##Notes
+## Notes
 
 - DynamoDB table and API Gateway are pay-per-request, but you may still incur small costs if left running.
 - The project is intentionally minimal and insecure (no authentication).
