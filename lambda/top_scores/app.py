@@ -33,6 +33,10 @@ def lambda_handler(event, context):
     
     item_dto = get_top_scores()
 
+    # Add rank field (starting at 1)
+    for idx, entry in enumerate(item_dto, start=1):
+        entry["rank"] = idx
+
     response = {
         "result": item_dto
     }

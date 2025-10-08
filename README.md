@@ -17,4 +17,10 @@ Serverless backend for a highscore table. Just to fool around. Not production re
 4. ```./refresh-resourceids.sh```
 
 ## Play
-* Call hello world
+1. ```./run_hello_world.sh```
+2. ```./run_get_topscores.sh```
+3. ```./run_create_scores.sh```
+4. ```./run_get_topscores.sh```
+
+## Tear Down
+```./delete-stack.sh```

@@ -5,8 +5,8 @@ set -euo pipefail
 API=$(scripts/build_api_url.sh)
 API_URL="${API}/score"
 
-# Generate and send 10 random users with scores
-for i in $(seq 1 10); do
+# Generate and send 20 random users with scores
+for i in $(seq 1 20); do
   user="user$((RANDOM % 1000))"             # random user suffix
   score=$((RANDOM % 10000))                 # random score 0–9999
 
