@@ -43,7 +43,7 @@ Before you begin, make sure you have:
     ```
 
 ## Usage
-1. Get current leaderboard
+1. Hello World!
     ```bash
     ./run_hello_world.sh
     ```
