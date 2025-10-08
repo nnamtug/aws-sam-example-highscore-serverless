@@ -30,7 +30,6 @@ Resources:
       Runtime: python3.13
       Architectures:
         - x86_64
-      MemorySize: 512
       Events:
         HelloWorld:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -39,6 +38,96 @@ Resources:
             Method: get
             RestApiId:
               Ref: ApiGateway
+
+  TopScoresFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/top_scores/
+      Handler: app.lambda_handler
+      Runtime: python3.13
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref HighscoreDBTable
+      Events:
+        GET:
+          Type: Api
+          Properties:
+            Path: /topscores
+            Method: get
+            RestApiId:
+              Ref: ApiGateway
+        OPTIONS:
+          Type: Api
+          Properties:
+            Path: /topscores
+            Method: options
+            RestApiId:
+              Ref: ApiGateway
+
+  ScoreWriteFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/score/
+      Handler: app.lambda_handler
+      Runtime: python3.13
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref HighscoreDBTable
+      Events:
+        POST:
+          Type: Api
+          Properties:
+            Path: /score
+            Method: post
+            RequestParameters:
+              - method.request.querystring.user:
+                  Required: true
+              - method.request.querystring.score:
+                  Required: true
+            RestApiId:
+              Ref: ApiGateway
+        OPTIONS:
+          Type: Api
+          Properties:
+            Path: /score
+            Method: options
+            RestApiId:
+              Ref: ApiGateway
+
+  HighscoreDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: HighScore
+      AttributeDefinitions:
+        - AttributeName: user
+          AttributeType: S
+        - AttributeName: score
+          AttributeType: N
+        - AttributeName: LeaderboardPK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: user
+          KeyType: HASH
+        - AttributeName: score
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: LeaderboardByScore
+          KeySchema:
+            - AttributeName: LeaderboardPK
+              KeyType: HASH
+            - AttributeName: score
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: False
 
 Outputs:
   HelloWorldApi:
