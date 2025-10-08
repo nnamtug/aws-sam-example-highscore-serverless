@@ -1,26 +1,75 @@
-# aws-example-hiscore-serverless
-Serverless backend for a highscore table. Just to fool around. Not production ready.
+# aws-example-highscore-serverless
 
+A simple serverless backend for a highscore leaderboard built with **AWS SAM**, **API Gateway**, **Lambda**, and **DynamoDB**.  
+This project is for experimentation and learning purposes — not production ready. 🚧
+
+---
+
+## Features
+- Store scores per user
+- Fetch a global leaderboard (top scores across all users)
+- Example scripts to build, deploy, seed, and query
+- Tear down resources when done
+
+---
 
 ## Prerequisites
-- Get an AWS Account
-- Install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-- Install [AWS SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
-- Have docker installed to build (optional, but reasonable)
-- Have python3 installed
+Before you begin, make sure you have:
 
+- An [AWS account](https://aws.amazon.com/free/) with credentials configured
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+- [Docker](https://docs.docker.com/get-docker/) (optional, for local building/emulation)
+- Python 3.8+ (tested with 3.13 runtime in Lambda)
 
-## Install
-1. Check/change region in [samconfig.toml](./samconfig.toml)
-2. ```sam build```
-3. ```sam deploy```
-4. ```./refresh-resourceids.sh```
+---
 
-## Play
-1. ```./run_hello_world.sh```
-2. ```./run_get_topscores.sh```
-3. ```./run_create_scores.sh```
-4. ```./run_get_topscores.sh```
+## Installation & Deployment
+
+1. Check or change the target region in [samconfig.toml](./samconfig.toml)
+2. Build the application:
+   ```bash
+   sam build
+   ```
+
+3. Deploy the application:
+    ```bash 
+    sam deploy
+    ```
+
+4. Refresh local resource IDs (helps some helper scripts):
+    ```bash
+    ./refresh-resourceids.sh
+    ```
+
+## Usage
+1. Get current leaderboard
+    ```bash
+    ./run_hello_world.sh
+    ```
+2. Get current leaderboard 
+    ```bash
+    ./run_get_topscores.sh
+    ```
+3. Create random scores 
+    ```bash
+    ./run_create_scores.sh
+    ```
+4. Check leaderboard again 
+    ```bash
+    ./run_get_topscores.sh
+    ```
 
 ## Tear Down
-```./delete-stack.sh```
+
+When you’re done experimenting, clean up resources to avoid charges:
+```bash
+./delete-stack.sh
+```
+
+---
+##Notes
+
+- DynamoDB table and API Gateway are pay-per-request, but you may still incur small costs if left running.
+- The project is intentionally minimal and insecure (no authentication).
+- Use this as a sandbox to learn AWS SAM, not for production workloads.
