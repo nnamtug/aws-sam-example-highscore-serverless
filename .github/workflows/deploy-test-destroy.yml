@@ -1,0 +1,158 @@
+name: Deploy ➜ Test ➜ Destroy
+
+on:
+  workflow_dispatch:
+    inputs:
+      aws_region:
+        description: "AWS Region for this run (overwrites samconfig.toml)"
+        required: true
+        default: "us-east-1"
+      env_suffix:
+        description: "Optional suffix for the dynamic stack name (e.g. feature-xyz)"
+        required: false
+        default: ""
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  AWS_REGION_INPUT: ${{ inputs.aws_region }}
+  STACK_NAME: ${{ github.event.repository.name }}-${{ github.run_number }}${{ inputs.env_suffix && format('-{0}', inputs.env_suffix) || '' }}
+  SAM_CLI_TELEMETRY: 0
+
+jobs:
+  deploy_and_refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-session-name: gh-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION_INPUT }}
+
+      - name: Setup AWS SAM CLI
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      # --- Overwrite stack_name and region in samconfig.toml (search & replace) ---
+      - name: Patch samconfig.toml
+        run: |
+          CFG="samconfig.toml"
+          [ -f "$CFG" ] || { echo "::error::$CFG not found"; exit 1; }
+          sed -i "s/^stack_name\s*=.*/stack_name = \"${STACK_NAME}\"/" "$CFG"
+          sed -i "s/^region\s*=.*/region = \"${AWS_REGION_INPUT}\"/" "$CFG"
+          echo "### Effective samconfig.toml values:"
+          grep -E '^(stack_name|region)\s*=' "$CFG"
+
+      #- name: Make scripts executable
+      #  run: |
+      #    chmod +x ./refresh-resourceids.sh
+      #    chmod +x ./run_hello_world.sh || true
+      #    chmod +x ./run_get_topscores.sh || true
+      #    chmod +x ./run_create_scores.sh || true
+      #    chmod +x ./delete-stack.sh
+
+      - name: SAM Build
+        run: sam build --parallel
+
+      - name: SAM Deploy (uses samconfig.toml)
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+
+      - name: Refresh resource IDs
+        run: ./refresh-resourceids.sh
+
+      - name: Upload artifacts (ids & config)
+        uses: actions/upload-artifact@v4
+        with:
+          name: refresh-artifacts
+          path: |
+            $(./scripts/build_resource_dir_name.sh)/*.txt
+            $(./scripts/build_resource_dir_name.sh)/resources.json
+            samconfig.toml
+          if-no-files-found: error
+
+  run_tests:
+    runs-on: ubuntu-latest
+    needs: deploy_and_refresh
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      #- name: Make scripts executable
+      #  run: |
+      #    chmod +x ./run_hello_world.sh || true
+      #    chmod +x ./run_get_topscores.sh || true
+      #    chmod +x ./run_create_scores.sh || true
+
+      - name: Download refresh artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: refresh-artifacts
+          path: ./artifacts
+
+      - name: Use patched samconfig.toml
+        run: cp ./artifacts/samconfig.toml ./samconfig.toml
+
+      # Tests executed using repo run_* scripts (build URLs exactly like in repo)
+      - name: Hello World
+        run: ./run_hello_world.sh | tee /tmp/hello.out
+
+      - name: Create Scores
+        run: ./run_create_scores.sh | tee /tmp/create.out
+
+      - name: Top Scores
+        run: ./run_get_topscores.sh | tee /tmp/topscores.out
+
+      - name: Upload test outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-outputs
+          path: |
+            /tmp/hello.out
+            /tmp/create.out
+            /tmp/topscores.out
+          if-no-files-found: ignore
+
+  destroy:
+    runs-on: ubuntu-latest
+    needs: [deploy_and_refresh, run_tests]
+    if: always()
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Make delete script executable
+        run: chmod +x ./delete-stack.sh
+
+      - name: Download samconfig.toml
+        uses: actions/download-artifact@v4
+        with:
+          name: refresh-artifacts
+          path: ./artifacts
+
+      - name: Destroy stack (delete-stack.sh)
+        run: |
+          cp ./artifacts/samconfig.toml ./samconfig.toml
+          ./delete-stack.sh
