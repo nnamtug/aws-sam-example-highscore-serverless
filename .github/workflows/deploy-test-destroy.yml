@@ -84,7 +84,7 @@ jobs:
       - name: Get resource dir name
         id: resdir
         run: |
-          folder=$(./scripts/build_resource_dir_name.sh)
+          folder=$(./scripts/build_resource_dir_localname.sh)
           echo "folder=$folder" >> "$GITHUB_OUTPUT"
 
       - name: Upload artifacts (resourceIds)
