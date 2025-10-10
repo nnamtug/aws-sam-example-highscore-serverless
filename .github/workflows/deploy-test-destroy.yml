@@ -131,6 +131,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install yq with TOML support
+        run: pip install yq
+
       - name: Make delete script executable
         run: chmod +x ./delete-stack.sh
 
