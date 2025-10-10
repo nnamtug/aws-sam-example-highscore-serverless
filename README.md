@@ -21,6 +21,7 @@ Before you begin, make sure you have:
 - [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
 - [Docker](https://docs.docker.com/get-docker/) (optional, for local building/emulation)
 - Python 3.8+ (tested with 3.13 runtime in Lambda)
+- jq, tomlq
 
 ---
 
