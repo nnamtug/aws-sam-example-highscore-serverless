@@ -1,6 +1,11 @@
 name: Deploy ➜ Test ➜ Destroy
 
 on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 1 * *' # Run at midnight on the first day of each month
   workflow_dispatch:
     inputs:
       aws_region:
