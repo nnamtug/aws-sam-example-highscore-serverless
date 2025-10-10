@@ -59,6 +59,14 @@ jobs:
           echo "### Effective samconfig.toml values:"
           grep -E '^(stack_name|region)\s*=' "$CFG"
 
+      - name: Upload staged toml
+        uses: actions/upload-artifact@v4
+        with:
+          name: staged-toml-artifact
+          path: |            
+            samconfig.toml
+          if-no-files-found: error
+
       - name: SAM Build
         run: sam build --parallel
 
@@ -68,14 +76,11 @@ jobs:
       - name: Refresh resource IDs
         run: ./refresh-resourceids.sh
 
-      - name: Upload artifacts (ids & config)
+      - name: Upload artifacts (resourceIds)
         uses: actions/upload-artifact@v4
         with:
-          name: refresh-artifacts
-          path: |
-            $(./scripts/build_resource_dir_name.sh)/*.txt
-            $(./scripts/build_resource_dir_name.sh)/resources.json
-            samconfig.toml
+          name: resourceIds
+          path: $(./scripts/build_resource_dir_name.sh)/
           if-no-files-found: error
 
   run_tests:
@@ -90,7 +95,7 @@ jobs:
       - name: Download refresh artifacts
         uses: actions/download-artifact@v4
         with:
-          name: refresh-artifacts
+          name: staged-toml
           path: ./artifacts
 
       - name: Use patched samconfig.toml
@@ -131,6 +136,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Configure AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-session-name: gh-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION_INPUT }}
+
       - name: Install yq with TOML support
         run: pip install yq
 
@@ -140,7 +152,7 @@ jobs:
       - name: Download samconfig.toml
         uses: actions/download-artifact@v4
         with:
-          name: refresh-artifacts
+          name: staged-toml
           path: ./artifacts
 
       - name: Destroy stack (delete-stack.sh)
