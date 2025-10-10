@@ -46,6 +46,9 @@ Resources:
       Architectures:
         - x86_64
       MemorySize: 512
+      Environment:
+        Variables:
+          HIGHSCORE_TABLE_NAME: !Ref HighscoreDBTable
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref HighscoreDBTable
@@ -74,6 +77,9 @@ Resources:
       Architectures:
         - x86_64
       MemorySize: 512
+      Environment:
+        Variables:
+          HIGHSCORE_TABLE_NAME: !Ref HighscoreDBTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref HighscoreDBTable
@@ -101,7 +107,6 @@ Resources:
   HighscoreDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: HighScore
       AttributeDefinitions:
         - AttributeName: user
           AttributeType: S

@@ -6,6 +6,10 @@ from boto3.dynamodb.conditions import Key
 
 from decimal import Decimal
 
+dynamodb = boto3.resource("dynamodb")
+table_name = os.environ["HIGHSCORE_TABLE_NAME"]
+table = dynamodb.Table(table_name)
+
 def decimal_default(obj):
     if isinstance(obj, Decimal):
         # keep integers as int; non-integers as float
@@ -13,9 +17,6 @@ def decimal_default(obj):
     raise TypeError
 
 def get_top_scores(limit: int = 10):
-    dynamodb = boto3.resource("dynamodb")
-    table = dynamodb.Table("HighScore")
-
     response = table.query(
         IndexName="LeaderboardByScore",
         KeyConditionExpression=Key("LeaderboardPK").eq("LEADERBOARD"),

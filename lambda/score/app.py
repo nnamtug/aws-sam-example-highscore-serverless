@@ -4,7 +4,8 @@ import os
 import time
 
 dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table("HighScore")
+table_name = os.environ["HIGHSCORE_TABLE_NAME"]
+table = dynamodb.Table(table_name)
 
 def save_score(user: str, score: int):
     # Each score item also needs LeaderboardPK for the GSI
