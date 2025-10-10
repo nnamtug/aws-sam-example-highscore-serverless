@@ -34,6 +34,10 @@ jobs:
   deploy_and_refresh:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      # Hardcoded defaults for push and schedule
+      AWS_REGION: us-east-1
+      ENV_SUFFIX: ""
 
     steps:
       - name: Checkout
