@@ -8,11 +8,13 @@ dir=".resourceids-${stackname}"
 if [ ! -d "${dir}" ] ;
 then
   mkdir "$dir"
+else
+  rm -f "${dir}"/*.txt "${dir}"/*.json
 fi
 
-rm -f "${dir}"/*.txt "${dir}"/*.json
 
 data=$(aws cloudformation list-stack-resources --region $region --stack-name $stackname) 
 echo $data | jq > "${dir}/resources.json"
 echo $data | python3 scripts/resourcedescriptionparser.py $dir
+echo "directory is: ${dir}"
 # ls -l "${dir}"
