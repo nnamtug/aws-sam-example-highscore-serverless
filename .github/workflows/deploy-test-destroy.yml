@@ -146,4 +146,4 @@ jobs:
       - name: Destroy stack (delete-stack.sh)
         run: |
           cp ./artifacts/samconfig.toml ./samconfig.toml
-          ./delete-stack.sh
+          ./delete-stack.sh --no-confirm
