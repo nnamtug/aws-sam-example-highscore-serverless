@@ -8,5 +8,5 @@ stackname=$(tomlq '.default.global.parameters.stack_name' ${script_dir}/../samco
 region=$(tomlq '.default.deploy.parameters.region' ${script_dir}/../samconfig.toml | jq -r)
 
 
-localresourcedir="$(.resourceids-$stackname")"
+localresourcedir="$(.resourceids-$stackname)"
 echo $localresourcedir
