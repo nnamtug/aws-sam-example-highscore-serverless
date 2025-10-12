@@ -97,9 +97,6 @@ jobs:
       - name: Refresh resource IDs
         run: ./refresh-resourceids.sh
 
-      - name: List resource IDs folder
-        run: ls -l $(./scripts/build_resource_dir_localname.sh)
-
       - name: Get resource dir name
         id: resdir
         run: |
@@ -110,6 +107,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: resource-ids
+          # whatever I do, I get a flattened zip file...
           path: ${{ steps.resdir.outputs.folder }}
           include-hidden-files: true            # <- needed for ".resourceids-..."
           if-no-files-found: error
@@ -142,6 +140,17 @@ jobs:
 
       - name: Use patched samconfig.toml
         run: cp ./artifacts/samconfig.toml ./samconfig.toml
+
+      - name: Download refresh resource-ids artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: resource-ids
+          path: ./resourceids
+
+      - name: Resrtore resourceids into place
+        run: |
+          mkdir ${{ steps.resdir.outputs.folder }} && cp ./resourceids/* ./asfd
+          test ${PIPESTATUS[0]} -eq 0
 
       # Tests executed using repo run_* scripts (build URLs exactly like in repo)
       - name: Hello World
