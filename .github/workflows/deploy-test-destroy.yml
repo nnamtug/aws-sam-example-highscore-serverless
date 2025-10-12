@@ -97,8 +97,8 @@ jobs:
       - name: Refresh resource IDs
         run: ./refresh-resourceids.sh
 
-      #- name: List resource IDs folder
-      #  run: ls -l ./$(./scripts/build_resource_dir_localname.sh)
+      - name: List resource IDs folder
+        run: ls -l $(./scripts/build_resource_dir_localname.sh)
 
       - name: Get resource dir name
         id: resdir
@@ -110,7 +110,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: resource-ids
-          path: ./${{ steps.resdir.outputs.folder }}/
+          path: ${{ steps.resdir.outputs.folder }}
           include-hidden-files: true            # <- needed for ".resourceids-..."
           if-no-files-found: error
 
