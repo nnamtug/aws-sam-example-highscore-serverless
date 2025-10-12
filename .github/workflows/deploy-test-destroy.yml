@@ -104,6 +104,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install yq with TOML support
+        run: pip install yq
+
       - name: Download refresh artifacts
         uses: actions/download-artifact@v4
         with:
