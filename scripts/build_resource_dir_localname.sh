@@ -7,5 +7,5 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 stackname=$(tomlq '.default.global.parameters.stack_name' ${script_dir}/../samconfig.toml | jq -r)
 
 
-resourcedir="/.resourceids-${stackname}"
+resourcedir=".resourceids-${stackname}"
 echo $resourcedir
