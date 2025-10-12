@@ -49,7 +49,7 @@ def lambda_handler(event, context):
 
         item = save_score(user, score)
         return {
-            "statusCode": 200,
+            "statusCode": 201,
             "headers": headers(allowed),
             "body": json.dumps({"message": "score saved", "item": item})
         }
