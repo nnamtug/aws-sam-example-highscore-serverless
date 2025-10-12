@@ -148,7 +148,7 @@ jobs:
           name: resource-ids
           path: ./resourceids
 
-      - name: Resrtore resourceids into place
+      - name: Restore resourceids into place
         run: |
           set -e
           folder=$(cat ./resourceids/folder.txt)
