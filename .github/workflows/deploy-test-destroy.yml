@@ -80,14 +80,6 @@ jobs:
             samconfig.toml
           if-no-files-found: error
 
-      - name: Cache SAM build artifacts
-        uses: actions/cache@v4
-        with:
-          path: .aws-sam
-          key: ${{ runner.os }}-aws-sam-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-aws-sam-
-
       - name: SAM Build
         run: sam build --parallel
 
@@ -97,10 +89,13 @@ jobs:
       - name: Refresh resource IDs
         run: ./refresh-resourceids.sh
 
+      - name: List resource IDs folder
+        run: ls -l ./$(./scripts/build_resource_dir_localname.sh)
+
       - name: Get resource dir name
         id: resdir
         run: |
-          folder=$(./scripts/build_resource_dir_name.sh)
+          folder=$(./scripts/build_resource_dir_localname.sh)
           echo "folder=$folder" >> "$GITHUB_OUTPUT"
 
       - name: Upload artifacts (resourceIds)
