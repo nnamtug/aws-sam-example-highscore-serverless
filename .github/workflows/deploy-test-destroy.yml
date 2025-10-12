@@ -101,6 +101,7 @@ jobs:
         id: resdir
         run: |
           folder=$(./scripts/build_resource_dir_localname.sh)
+          echo "$folder" > ./$folder/folder.txt
           echo "folder=$folder" >> "$GITHUB_OUTPUT"
 
       - name: Upload artifacts (resourceIds)
@@ -149,8 +150,10 @@ jobs:
 
       - name: Resrtore resourceids into place
         run: |
-          mkdir ${{ steps.resdir.outputs.folder }} && cp ./resourceids/* ./asfd
-          test ${PIPESTATUS[0]} -eq 0
+          set -e
+          folder=$(cat ./resourceids/folder.txt)
+          mkdir $folder
+          cp ./resourceids/* ./$folder
 
       # Tests executed using repo run_* scripts (build URLs exactly like in repo)
       - name: Hello World
