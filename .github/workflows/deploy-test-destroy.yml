@@ -84,7 +84,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .aws-sam
-          key: ${{ runner.os }}-aws-sam
+          key: ${{ runner.os }}-aws-sam-${{ hashFiles('template.yaml', '**/requirements.txt', 'lambda/**') }}
           restore-keys: |
             ${{ runner.os }}-aws-sam-
 
