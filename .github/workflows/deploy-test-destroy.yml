@@ -110,7 +110,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: resource-ids
-          path: ${{ steps.resdir.outputs.folder }}
+          path: ./${{ steps.resdir.outputs.folder }}/
           include-hidden-files: true            # <- needed for ".resourceids-..."
           if-no-files-found: error
 
