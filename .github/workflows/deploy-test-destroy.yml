@@ -51,8 +51,16 @@ jobs:
         with:
           use-installer: true
       
-      - name: Install yq with TOML support
-        run: pip install yq
+      - name: Cache pip for build requirements
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('scripts/build-requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install build requirements
+        run: pip install -r scripts/build-requirements.txt
 
       # --- Overwrite stack_name and region in samconfig.toml (search & replace) ---
       - name: Patch samconfig.toml
@@ -104,8 +112,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install yq with TOML support
-        run: pip install yq
+      - name: Cache pip for build requirements
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('scripts/build-requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install build requirements
+        run: pip install -r scripts/build-requirements.txt
 
       - name: Download refresh artifacts
         uses: actions/download-artifact@v4
@@ -158,8 +174,16 @@ jobs:
           role-session-name: gh-${{ github.run_id }}
           aws-region: ${{ env.AWS_REGION_INPUT }}
 
-      - name: Install yq with TOML support
-        run: pip install yq
+      - name: Cache pip for build requirements
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('scripts/build-requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install build requirements
+        run: pip install -r scripts/build-requirements.txt
 
       - name: Make delete script executable
         run: chmod +x ./delete-stack.sh
