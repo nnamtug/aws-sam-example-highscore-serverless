@@ -134,16 +134,24 @@ jobs:
 
       # Tests executed using repo run_* scripts (build URLs exactly like in repo)
       - name: Hello World
-        run: ./run_hello_world.sh | tee /tmp/hello.out
+        run: |
+          ./run_hello_world.sh | tee /tmp/hello.out
+          test ${PIPESTATUS[0]} -eq 0
 
       - name: Create Scores
-        run: ./run_create_scores.sh | tee /tmp/create.out
+        run: |
+          ./run_create_scores.sh | tee /tmp/create.out
+          test ${PIPESTATUS[0]} -eq 0
 
-      - name: Top Scores
-        run: ./run_get_topscores.sh | tee /tmp/topscores.out
+      - name: Top Scores 
+        run: |
+          ./run_get_topscores.sh | tee /tmp/topscores.out
+          test ${PIPESTATUS[0]} -eq 0
 
       - name: Test Top Scores
-        run: ./scripts/test_topscores.sh | tee /tmp/test-topscores.out
+        run: |
+          ./scripts/test_topscores.sh | tee /tmp/test-topscores.out
+          test ${PIPESTATUS[0]} -eq 0
 
       - name: Upload test outputs
         if: always()
