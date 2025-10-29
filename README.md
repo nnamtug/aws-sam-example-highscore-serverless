@@ -1,7 +1,12 @@
-# aws-example-highscore-serverless
+# AWS SAM Example – High-Score Serverless Backend
 
-A simple serverless backend for a highscore leaderboard built with **AWS SAM**, **API Gateway**, **Lambda**, and **DynamoDB**.  
-This project is for experimentation and learning purposes — not production ready. 🚧
+This repository demonstrates how to **set up a serverless leaderboard API** using the **AWS Serverless Application Model (SAM)**.  
+It provisions a fully managed backend with **AWS Lambda**, **Amazon API Gateway**, and **Amazon DynamoDB** — ideal for learning or testing AWS serverless architectures.  
+
+> ⚠️ **Note:** This project is **not production-ready**.  
+> It’s an example for understanding **the setup and deployment process**, not a complete or optimized implementation.
+
+Use it as a reference to explore **infrastructure setup**, CI/CD integration, or AWS SAM project structure for serverless applications.
 
 ---
 
