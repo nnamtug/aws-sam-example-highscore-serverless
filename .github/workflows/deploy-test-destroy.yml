@@ -136,7 +136,7 @@ jobs:
         run: pip install -r scripts/build-requirements.txt
 
       - name: Download refresh artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: staged-toml-artifact
           path: ./artifacts
@@ -145,7 +145,7 @@ jobs:
         run: cp ./artifacts/samconfig.toml ./samconfig.toml
 
       - name: Download refresh resource-ids artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: resource-ids
           path: ./resourceids
@@ -222,7 +222,7 @@ jobs:
         run: chmod +x ./delete-stack.sh
 
       - name: Download samconfig.toml
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: staged-toml-artifact
           path: ./artifacts
