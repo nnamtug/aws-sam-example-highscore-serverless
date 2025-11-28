@@ -75,7 +75,7 @@ jobs:
           grep -E '^(stack_name|region)\s*=' "$CFG"
 
       - name: Upload staged toml
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: staged-toml-artifact
           path: |            
@@ -107,7 +107,7 @@ jobs:
           echo "folder=$folder" >> "$GITHUB_OUTPUT"
 
       - name: Upload artifacts (resourceIds)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: resource-ids
           # whatever I do, I get a flattened zip file...
@@ -180,7 +180,7 @@ jobs:
 
       - name: Upload test outputs
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-outputs
           path: |
