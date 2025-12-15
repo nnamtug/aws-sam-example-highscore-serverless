@@ -54,7 +54,7 @@ jobs:
           use-installer: true
       
       - name: Cache pip for build requirements
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('scripts/build-requirements.txt') }}
@@ -83,7 +83,7 @@ jobs:
           if-no-files-found: error
 
       - name: Cache SAM build artifacts
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .aws-sam
           key: ${{ runner.os }}-aws-sam-${{ hashFiles('template.yaml', 'lambda/**') }}
@@ -125,7 +125,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Cache pip for build requirements
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('scripts/build-requirements.txt') }}
@@ -208,7 +208,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION_INPUT }}
 
       - name: Cache pip for build requirements
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('scripts/build-requirements.txt') }}
