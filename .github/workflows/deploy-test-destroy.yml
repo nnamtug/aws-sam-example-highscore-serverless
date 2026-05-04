@@ -49,7 +49,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION_INPUT }}
 
       - name: Setup AWS SAM CLI
-        uses: aws-actions/setup-sam@v2
+        uses: aws-actions/setup-sam@v3
         with:
           use-installer: true
       
